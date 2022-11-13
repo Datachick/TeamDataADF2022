@@ -1,0 +1,84 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "teamdatalabtester-df2"
+		},
+		"CosmosDb1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CosmosDb1'"
+		},
+		"CosmosDbNew_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CosmosDbNew'"
+		},
+		"MoviesDB2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'MoviesDB2'"
+		},
+		"TMDBMoviesTable_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'TMDBMoviesTable'"
+		},
+		"TeamDataLabTesterSQLDB_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'TeamDataLabTesterSQLDB'"
+		},
+		"NewMoviesDB2 file_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/efd91078-883e-4467-8197-79a9aab63251/resourceGroups/TeamDataClassRG/providers/Microsoft.Storage/storageAccounts/teamdatalab30"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "teamdatalabtester-df2_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"CosmosDb1_connectionString": {
+						"value": "[parameters('CosmosDb1_connectionString')]"
+					},
+					"CosmosDbNew_connectionString": {
+						"value": "[parameters('CosmosDbNew_connectionString')]"
+					},
+					"MoviesDB2_connectionString": {
+						"value": "[parameters('MoviesDB2_connectionString')]"
+					},
+					"TMDBMoviesTable_connectionString": {
+						"value": "[parameters('TMDBMoviesTable_connectionString')]"
+					},
+					"TeamDataLabTesterSQLDB_connectionString": {
+						"value": "[parameters('TeamDataLabTesterSQLDB_connectionString')]"
+					},
+					"NewMoviesDB2 file_properties_typeProperties_scope": {
+						"value": "[parameters('NewMoviesDB2 file_properties_typeProperties_scope')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

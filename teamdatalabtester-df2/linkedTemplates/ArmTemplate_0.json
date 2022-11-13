@@ -1,0 +1,690 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "teamdatalabtester-df2"
+		},
+		"CosmosDb1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CosmosDb1'"
+		},
+		"CosmosDbNew_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CosmosDbNew'"
+		},
+		"MoviesDB2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'MoviesDB2'"
+		},
+		"TMDBMoviesTable_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'TMDBMoviesTable'"
+		},
+		"TeamDataLabTesterSQLDB_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'TeamDataLabTesterSQLDB'"
+		},
+		"NewMoviesDB2 file_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/efd91078-883e-4467-8197-79a9aab63251/resourceGroups/TeamDataClassRG/providers/Microsoft.Storage/storageAccounts/teamdatalab30"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/CosmosDb1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "CosmosDb",
+				"typeProperties": {
+					"connectionString": "[parameters('CosmosDb1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CosmosDbNew')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "CosmosDb",
+				"typeProperties": {
+					"connectionString": "[parameters('CosmosDbNew_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MoviesDB2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "adf",
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('MoviesDB2_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TMDBMoviesTable')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('TMDBMoviesTable_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TeamDataLabTesterSQLDB')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('TeamDataLabTesterSQLDB_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CosmosDBToDoList')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CosmosDbNew",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "CosmosDbSqlApiCollection",
+				"schema": {
+					"type": "object",
+					"properties": {
+						"address": {
+							"type": "string"
+						}
+					}
+				},
+				"typeProperties": {
+					"collectionName": "MatchedMoviesXX"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CosmosDbNew')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MoviesDB2CSV')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MoviesDB2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "MoviesDB2.csv",
+						"container": "data"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "movies",
+						"type": "String"
+					},
+					{
+						"name": "Title",
+						"type": "String"
+					},
+					{
+						"name": "genresgenregenre",
+						"type": "String"
+					},
+					{
+						"name": "YEAR",
+						"type": "String"
+					},
+					{
+						"name": "Rating",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/MoviesDB2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PutItIntoCosDB')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CosmosDbNew",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "CosmosDbSqlApiCollection",
+				"schema": {},
+				"typeProperties": {
+					"collectionName": "MatchedMoviesXX"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CosmosDbNew')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TMDBMoviesTable')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TMDBMoviesTable",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "imdb_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "popularity",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "budget",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "revenue",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "original_title",
+						"type": "nvarchar"
+					},
+					{
+						"name": "cast",
+						"type": "nvarchar"
+					},
+					{
+						"name": "homepage",
+						"type": "nvarchar"
+					},
+					{
+						"name": "director",
+						"type": "nvarchar"
+					},
+					{
+						"name": "tagline",
+						"type": "nvarchar"
+					},
+					{
+						"name": "keywords",
+						"type": "nvarchar"
+					},
+					{
+						"name": "overview",
+						"type": "nvarchar"
+					},
+					{
+						"name": "runtime",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "genres",
+						"type": "nvarchar"
+					},
+					{
+						"name": "production_companies",
+						"type": "nvarchar"
+					},
+					{
+						"name": "release_date",
+						"type": "date"
+					},
+					{
+						"name": "vote_count",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "vote_average",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "release_year",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "budget_adj",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "revenue_adj",
+						"type": "float",
+						"precision": 15
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tmdb_movies_data"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/TMDBMoviesTable')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TeamDataLabTesterMoviesDB2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TeamDataLabTesterSQLDB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "MovieID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Title",
+						"type": "nvarchar"
+					},
+					{
+						"name": "genres",
+						"type": "nvarchar"
+					},
+					{
+						"name": "YEAR",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Rating",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "teamdatalabtester",
+					"table": "MoviesDB2"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/TeamDataLabTesterSQLDB')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Copy MoviesDB2 to new SQL DB table')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Auto-Creates a new table in Azure SQL DB based on the MoviesDB2 CSV file",
+				"activities": [
+					{
+						"name": "Put Movies into Database",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "data//MoviesDB2.csv"
+							},
+							{
+								"name": "Destination",
+								"value": "teamdatalabtester.MoviesDB2"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings",
+									"skipLineCount": 0
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"tableOption": "autoCreate"
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true,
+							"validateDataConsistency": true,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "movies",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "MovieID"
+										}
+									},
+									{
+										"source": {
+											"name": "Title",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Title",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "genresgenregenre",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "genres"
+										}
+									},
+									{
+										"source": {
+											"name": "YEAR",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "YEAR"
+										}
+									},
+									{
+										"source": {
+											"name": "Rating",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Rating",
+											"type": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "MoviesDB2CSV",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "TeamDataLabTesterMoviesDB2",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-11-13T21:15:28Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/MoviesDB2CSV')]",
+				"[concat(variables('factoryId'), '/datasets/TeamDataLabTesterMoviesDB2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MovieMatching')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "TMDBMoviesTable",
+								"type": "DatasetReference"
+							},
+							"name": "TMDBMovies"
+						},
+						{
+							"dataset": {
+								"referenceName": "TeamDataLabTesterMoviesDB2",
+								"type": "DatasetReference"
+							},
+							"name": "SQLMoviesDB"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "CosmosDBToDoList",
+								"type": "DatasetReference"
+							},
+							"name": "MatchedMoviesToCosmosDBToDoList"
+						},
+						{
+							"dataset": {
+								"referenceName": "CosmosDBToDoList",
+								"type": "DatasetReference"
+							},
+							"name": "WriteToCosmosDBToDoList"
+						}
+					],
+					"transformations": [
+						{
+							"name": "TitleJoining"
+						},
+						{
+							"name": "split1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          id as integer,",
+						"          imdb_id as string,",
+						"          popularity as double,",
+						"          budget as long,",
+						"          revenue as long,",
+						"          original_title as string,",
+						"          cast as string,",
+						"          homepage as string,",
+						"          director as string,",
+						"          tagline as string,",
+						"          keywords as string,",
+						"          overview as string,",
+						"          runtime as integer,",
+						"          genres as string,",
+						"          production_companies as string,",
+						"          release_date as date,",
+						"          vote_count as integer,",
+						"          vote_average as double,",
+						"          release_year as integer,",
+						"          budget_adj as double,",
+						"          revenue_adj as double",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> TMDBMovies",
+						"source(output(",
+						"          MovieID as string,",
+						"          Title as string,",
+						"          genres as string,",
+						"          YEAR as string,",
+						"          Rating as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> SQLMoviesDB",
+						"TMDBMovies, SQLMoviesDB join(original_title == Title,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'off')~> TitleJoining",
+						"TitleJoining split(release_year==(toInteger(YEAR)),",
+						"     disjoint: false) ~> split1@(YearMatched, YearNotMatched)",
+						"split1@YearMatched sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          address as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'document',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     mapColumn(",
+						"          id,",
+						"          imdb_id,",
+						"          DB2MovieID = MovieID,",
+						"          DB2Title = Title,",
+						"          TMDB_title = original_title,",
+						"          popularity,",
+						"          DB2Rating = Rating,",
+						"          budget,",
+						"          revenue,",
+						"          tagline,",
+						"          release_date,",
+						"          TMDB_release_year = release_year,",
+						"          DB2Year = YEAR,",
+						"          vote_count,",
+						"          vote_average",
+						"     )) ~> MatchedMoviesToCosmosDBToDoList",
+						"split1@YearNotMatched sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          address as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'document',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     mapColumn(",
+						"          id,",
+						"          imdb_id,",
+						"          popularity,",
+						"          original_title,",
+						"          DB2Title = Title,",
+						"          TMDBrelease_year = release_year,",
+						"          TMDBYEAR = YEAR,",
+						"          vote_average,",
+						"          genres = split1@YearNotMatched@genres,",
+						"          release_date,",
+						"          vote_count,",
+						"          Rating,",
+						"          MovieID,",
+						"          genres = split1@YearNotMatched@genres",
+						"     )) ~> WriteToCosmosDBToDoList"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/TMDBMoviesTable')]",
+				"[concat(variables('factoryId'), '/datasets/TeamDataLabTesterMoviesDB2')]",
+				"[concat(variables('factoryId'), '/datasets/CosmosDBToDoList')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NewMoviesDB2 file')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "When a new MoviesDB2 file shows up",
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Copy MoviesDB2 to new SQL DB table",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/data/blobs/",
+					"blobPathEndsWith": "MoviesDB2.csv",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('NewMoviesDB2 file_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Copy MoviesDB2 to new SQL DB table')]"
+			]
+		}
+	]
+}

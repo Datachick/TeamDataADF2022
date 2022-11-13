@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "teamdatalabtester-df2"
+		},
+		"CosmosDb1_connectionString": {
+			"value": ""
+		},
+		"CosmosDbNew_connectionString": {
+			"value": ""
+		},
+		"MoviesDB2_connectionString": {
+			"value": ""
+		},
+		"TMDBMoviesTable_connectionString": {
+			"value": ""
+		},
+		"TeamDataLabTesterSQLDB_connectionString": {
+			"value": ""
+		},
+		"NewMoviesDB2 file_properties_typeProperties_scope": {
+			"value": "/subscriptions/efd91078-883e-4467-8197-79a9aab63251/resourceGroups/TeamDataClassRG/providers/Microsoft.Storage/storageAccounts/teamdatalab30"
+		}
+	}
+}
