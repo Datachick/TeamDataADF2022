@@ -40,7 +40,7 @@
 					"name": "TitleJoining"
 				},
 				{
-					"name": "split1"
+					"name": "TestingforYearMatch"
 				}
 			],
 			"scriptLines": [
@@ -88,8 +88,8 @@
 				"     ignoreSpaces: false,",
 				"     broadcast: 'off')~> TitleJoining",
 				"TitleJoining split(release_year==(toInteger(YEAR)),",
-				"     disjoint: false) ~> split1@(YearMatched, YearNotMatched)",
-				"split1@YearMatched sink(allowSchemaDrift: true,",
+				"     disjoint: false) ~> TestingforYearMatch@(YearMatched, YearNotMatched)",
+				"TestingforYearMatch@YearMatched sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          address as string",
@@ -99,6 +99,7 @@
 				"     updateable:false,",
 				"     upsertable:false,",
 				"     format: 'document',",
+				"     partitionKey: ['/MovieID'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     mapColumn(",
@@ -118,7 +119,7 @@
 				"          vote_count,",
 				"          vote_average",
 				"     )) ~> MatchedMoviesToCosmosDBToDoList",
-				"split1@YearNotMatched sink(allowSchemaDrift: true,",
+				"TestingforYearMatch@YearNotMatched sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          address as string",
@@ -139,12 +140,12 @@
 				"          TMDBrelease_year = release_year,",
 				"          TMDBYEAR = YEAR,",
 				"          vote_average,",
-				"          genres = split1@YearNotMatched@genres,",
+				"          genres = TestingforYearMatch@YearNotMatched@genres,",
 				"          release_date,",
 				"          vote_count,",
 				"          Rating,",
 				"          MovieID,",
-				"          genres = split1@YearNotMatched@genres",
+				"          genres = TestingforYearMatch@YearNotMatched@genres",
 				"     )) ~> WriteToCosmosDBToDoList"
 			]
 		}
