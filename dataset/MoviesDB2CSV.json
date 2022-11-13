@@ -1,5 +1,5 @@
 {
-	"name": "MoviesDB2",
+	"name": "MoviesDB2CSV",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "MoviesDB2",

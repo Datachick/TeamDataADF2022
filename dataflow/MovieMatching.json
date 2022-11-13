@@ -112,8 +112,6 @@
 				"          budget,",
 				"          revenue,",
 				"          tagline,",
-				"          TMDBgenres = {TMDBMovies@genres},",
-				"          genres = {SQLMoviesDB@genres},",
 				"          release_date,",
 				"          TMDB_release_year = release_year,",
 				"          DB2Year = YEAR,",
