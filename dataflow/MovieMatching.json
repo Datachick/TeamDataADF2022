@@ -76,7 +76,7 @@
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'off')~> TitleJoining",
-				"TitleJoining split(ERROR_FUNCTION('release_year = toInteger(YEAR)'),",
+				"TitleJoining split(release_year == toInteger(YEAR),",
 				"     disjoint: false) ~> split1@(MatchedOnYear, MisMatchedOnYear)",
 				"split1@MatchedOnYear sink(validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
