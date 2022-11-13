@@ -10,6 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": "Errors",
 				"container": "adferrors"
 			},
 			"columnDelimiter": ",",
@@ -17,6 +18,67 @@
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "id",
+				"type": "String"
+			},
+			{
+				"name": "imdb_id",
+				"type": "String"
+			},
+			{
+				"name": "DB2MovieID",
+				"type": "String"
+			},
+			{
+				"name": "DB2Title",
+				"type": "String"
+			},
+			{
+				"name": "TMDB_title",
+				"type": "String"
+			},
+			{
+				"name": "popularity",
+				"type": "String"
+			},
+			{
+				"name": "DB2Rating",
+				"type": "String"
+			},
+			{
+				"name": "budget",
+				"type": "String"
+			},
+			{
+				"name": "revenue",
+				"type": "String"
+			},
+			{
+				"name": "tagline",
+				"type": "String"
+			},
+			{
+				"name": "release_date",
+				"type": "String"
+			},
+			{
+				"name": "TMDB_release_year",
+				"type": "String"
+			},
+			{
+				"name": "DB2Year",
+				"type": "String"
+			},
+			{
+				"name": "vote_count",
+				"type": "String"
+			},
+			{
+				"name": "vote_average",
+				"type": "String"
+			}
+		]
 	}
 }
