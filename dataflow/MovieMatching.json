@@ -121,7 +121,7 @@
 				"          vote_average",
 				"     )) ~> MatchedMoviesToCosmosDBToDoList",
 				"TestingforYearMatch@YearNotMatched sink(allowSchemaDrift: true,",
-				"     validateSchema: true,",
+				"     validateSchema: false,",
 				"     input(",
 				"          id as string,",
 				"          imdb_id as string,",
