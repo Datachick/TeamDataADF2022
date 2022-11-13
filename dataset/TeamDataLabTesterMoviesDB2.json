@@ -1,0 +1,38 @@
+{
+	"name": "TeamDataLabTesterMoviesDB2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TeamDataLabTesterSQLDB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "MovieID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Title",
+				"type": "nvarchar"
+			},
+			{
+				"name": "genres",
+				"type": "nvarchar"
+			},
+			{
+				"name": "YEAR",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Rating",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "teamdatalabtester",
+			"table": "MoviesDB2"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

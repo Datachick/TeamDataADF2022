@@ -1,0 +1,26 @@
+{
+	"name": "NewMoviesDB2 file",
+	"properties": {
+		"description": "When a new MoviesDB2 file shows up",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Copy MoviesDB2 to new SQL DB table",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/data/blobs/",
+			"blobPathEndsWith": "MoviesDB2.csv",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/efd91078-883e-4467-8197-79a9aab63251/resourceGroups/TeamDataClassRG/providers/Microsoft.Storage/storageAccounts/teamdatalab30",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

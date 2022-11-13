@@ -1,0 +1,23 @@
+{
+	"name": "CosmosDBToDoList",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CosmosDbNew",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "CosmosDbSqlApiCollection",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"address": {
+					"type": "string"
+				}
+			}
+		},
+		"typeProperties": {
+			"collectionName": "MatchedMoviesXX"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

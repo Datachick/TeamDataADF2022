@@ -1,0 +1,9 @@
+{
+	"name": "teamdatalabtester-df2",
+	"location": "eastus2",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "320e137d-f10c-4dc6-a724-aad0842fbcd1",
+		"tenantId": "8089d209-c6b7-49cb-9f9a-4fb83e745ac9"
+	}
+}

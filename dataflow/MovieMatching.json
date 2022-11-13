@@ -1,0 +1,154 @@
+{
+	"name": "MovieMatching",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "TMDBMoviesTable",
+						"type": "DatasetReference"
+					},
+					"name": "TMDBMovies"
+				},
+				{
+					"dataset": {
+						"referenceName": "TeamDataLabTesterMoviesDB2",
+						"type": "DatasetReference"
+					},
+					"name": "SQLMoviesDB"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "CosmosDBToDoList",
+						"type": "DatasetReference"
+					},
+					"name": "MatchedMoviesToCosmosDBToDoList"
+				},
+				{
+					"dataset": {
+						"referenceName": "CosmosDBToDoList",
+						"type": "DatasetReference"
+					},
+					"name": "WriteToCosmosDBToDoList"
+				}
+			],
+			"transformations": [
+				{
+					"name": "TitleJoining"
+				},
+				{
+					"name": "split1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id as integer,",
+				"          imdb_id as string,",
+				"          popularity as double,",
+				"          budget as long,",
+				"          revenue as long,",
+				"          original_title as string,",
+				"          cast as string,",
+				"          homepage as string,",
+				"          director as string,",
+				"          tagline as string,",
+				"          keywords as string,",
+				"          overview as string,",
+				"          runtime as integer,",
+				"          genres as string,",
+				"          production_companies as string,",
+				"          release_date as date,",
+				"          vote_count as integer,",
+				"          vote_average as double,",
+				"          release_year as integer,",
+				"          budget_adj as double,",
+				"          revenue_adj as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> TMDBMovies",
+				"source(output(",
+				"          MovieID as string,",
+				"          Title as string,",
+				"          genres as string,",
+				"          YEAR as string,",
+				"          Rating as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SQLMoviesDB",
+				"TMDBMovies, SQLMoviesDB join(original_title == Title,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'off')~> TitleJoining",
+				"TitleJoining split(release_year==(toInteger(YEAR)),",
+				"     disjoint: false) ~> split1@(YearMatched, YearNotMatched)",
+				"split1@YearMatched sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          address as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'document',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          id,",
+				"          imdb_id,",
+				"          DB2MovieID = MovieID,",
+				"          DB2Title = Title,",
+				"          TMDB_title = original_title,",
+				"          popularity,",
+				"          DB2Rating = Rating,",
+				"          budget,",
+				"          revenue,",
+				"          tagline,",
+				"          TMDBgenres = {TMDBMovies@genres},",
+				"          genres = {SQLMoviesDB@genres},",
+				"          release_date,",
+				"          TMDB_release_year = release_year,",
+				"          DB2Year = YEAR,",
+				"          vote_count,",
+				"          vote_average",
+				"     )) ~> MatchedMoviesToCosmosDBToDoList",
+				"split1@YearNotMatched sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          address as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'document',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          id,",
+				"          imdb_id,",
+				"          popularity,",
+				"          original_title,",
+				"          DB2Title = Title,",
+				"          TMDBrelease_year = release_year,",
+				"          TMDBYEAR = YEAR,",
+				"          vote_average,",
+				"          genres = split1@YearNotMatched@genres,",
+				"          release_date,",
+				"          vote_count,",
+				"          Rating,",
+				"          MovieID,",
+				"          genres = split1@YearNotMatched@genres",
+				"     )) ~> WriteToCosmosDBToDoList"
+			]
+		}
+	}
+}

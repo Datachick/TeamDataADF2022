@@ -1,0 +1,16 @@
+{
+	"name": "PutItIntoCosmsDB",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CosmosDbNew",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "CosmosDbSqlApiCollection",
+		"schema": {},
+		"typeProperties": {
+			"collectionName": "MatchedMoviesXX"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
