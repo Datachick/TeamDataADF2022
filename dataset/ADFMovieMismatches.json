@@ -1,0 +1,22 @@
+{
+	"name": "ADFMovieMismatches",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "MismatchedMoviesByYEar",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "adferrors"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

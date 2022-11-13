@@ -29,10 +29,11 @@
 				},
 				{
 					"dataset": {
-						"referenceName": "CosmosDBToDoList",
+						"referenceName": "ADFMovieMismatches",
 						"type": "DatasetReference"
 					},
-					"name": "WriteToCosmosDBToDoList"
+					"name": "ADFErrors",
+					"description": "Export data to CSV"
 				}
 			],
 			"transformations": [
@@ -120,33 +121,39 @@
 				"          vote_average",
 				"     )) ~> MatchedMoviesToCosmosDBToDoList",
 				"TestingforYearMatch@YearNotMatched sink(allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     input(",
-				"          address as string",
-				"     ),",
-				"     deletable:false,",
-				"     insertable:true,",
-				"     updateable:false,",
-				"     upsertable:false,",
-				"     format: 'document',",
+				"     validateSchema: true,",
+				"     truncate: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     mapColumn(",
 				"          id,",
 				"          imdb_id,",
 				"          popularity,",
+				"          budget,",
+				"          revenue,",
 				"          original_title,",
-				"          DB2Title = Title,",
-				"          TMDBrelease_year = release_year,",
-				"          TMDBYEAR = YEAR,",
-				"          vote_average,",
+				"          cast,",
+				"          homepage,",
+				"          director,",
+				"          tagline,",
+				"          keywords,",
+				"          overview,",
+				"          runtime,",
 				"          genres = TestingforYearMatch@YearNotMatched@genres,",
+				"          production_companies,",
 				"          release_date,",
 				"          vote_count,",
-				"          Rating,",
+				"          vote_average,",
+				"          release_year,",
+				"          budget_adj,",
+				"          revenue_adj,",
 				"          MovieID,",
-				"          genres = TestingforYearMatch@YearNotMatched@genres",
-				"     )) ~> WriteToCosmosDBToDoList"
+				"          Title,",
+				"          genres = TestingforYearMatch@YearNotMatched@genres,",
+				"          YEAR,",
+				"          Rating",
+				"     ),",
+				"     format: 'document') ~> ADFErrors"
 			]
 		}
 	}
