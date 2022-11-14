@@ -29,6 +29,13 @@
 				},
 				{
 					"name": "sink1"
+				},
+				{
+					"linkedService": {
+						"referenceName": "AzureBlobStorage1",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink2"
 				}
 			],
 			"transformations": [
@@ -116,7 +123,47 @@
 				"          vote_average,",
 				"          MovieID,",
 				"          Rating",
-				"     )) ~> sink1"
+				"     )) ~> sink1",
+				"split1@MisMatchedOnYear sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delimited',",
+				"     fileSystem: 'adferrorlogs',",
+				"     columnDelimiter: ',',",
+				"     escapeChar: '\\\\',",
+				"     quoteChar: '\\\"',",
+				"     columnNamesAsHeader: false,",
+				"     partitionFileNames:['adferrors.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          id,",
+				"          imdb_id,",
+				"          popularity,",
+				"          budget,",
+				"          revenue,",
+				"          original_title,",
+				"          cast,",
+				"          homepage,",
+				"          director,",
+				"          tagline,",
+				"          keywords,",
+				"          overview,",
+				"          runtime,",
+				"          genres = split1@MisMatchedOnYear@genres,",
+				"          production_companies,",
+				"          release_date,",
+				"          vote_count,",
+				"          vote_average,",
+				"          release_year,",
+				"          budget_adj,",
+				"          revenue_adj,",
+				"          MovieID,",
+				"          Title,",
+				"          genres = split1@MisMatchedOnYear@genres,",
+				"          YEAR,",
+				"          Rating",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> sink2"
 			]
 		}
 	}
