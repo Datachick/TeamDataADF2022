@@ -1,0 +1,9 @@
+{
+	"name": "TeamDataLab22-df",
+	"location": "eastus2",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "4dcb4fd0-8552-4899-957a-4de8119beb3b",
+		"tenantId": "8089d209-c6b7-49cb-9f9a-4fb83e745ac9"
+	}
+}

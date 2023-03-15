@@ -1,0 +1,38 @@
+{
+	"name": "DestinationDataset_y1o",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TeamDataLab22SQL",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "MovieID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Title",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Genres",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Year",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Rating",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "TeamDataLab22",
+			"table": "MoviesDB2"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
