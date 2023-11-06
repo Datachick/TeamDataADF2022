@@ -1,0 +1,7 @@
+{
+	"name": "integrationRuntimeTDL",
+	"properties": {
+		"type": "SelfHosted",
+		"description": "TeamDataLab"
+	}
+}
